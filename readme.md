@@ -3,7 +3,7 @@
 
 
 <div align="center" style="border-radius: 12px">
-  <img src="isku.png" alt="sql-Lord" width="100%" style="border-radius: 12px">
+  <img src="sql.png" alt="sql-Lord" width="100%" style="border-radius: 12px">
 </div>
 <div>
 <h2 align="center">Hear the call of the CRUD-lord! 👋</h2>
