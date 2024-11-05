@@ -5,6 +5,7 @@
 <div align="center" style="border-radius: 12px">
   <img src="sql.png" alt="sql-Lord" width="100%" style="border-radius: 12px">
 </div>
+
 <div>
 <h2 align="center">Hear the call of the CRUD-lord! 👋</h2>
 </div>
@@ -25,7 +26,7 @@ Install required packages (cors is optional but highly suggested)
 
 Middleware and imports
 ```bash
-  const express = require("express");
+const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql");
 const app = express()
@@ -38,3 +39,8 @@ app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
   })
 ```
+Run XAMP's Apache and MySQl
+<div align="center" style="border-radius: 12px">
+  <img src="Xamp.PNG" alt="sql-Lord" width="100%" style="border-radius: 12px">
+</div>
+
