@@ -18,10 +18,10 @@ First step is to initiate a server that requires
   npm init -y
 ```
 
-Install required packages (cors is optional but highly suggested)
+Install required packages (dotenv is optional but highly recommended)
 
 ```bash
-  npm i mysql express cors
+  npm i mysql express cors dotenv
 ```
 
 Middleware and imports
@@ -44,3 +44,20 @@ Run XAMP's Apache and MySQl
   <img src="Xamp.PNG" alt="sql-Lord" width="100%" style="border-radius: 12px">
 </div>
 
+Configure the mySQL connection
+```bash
+  mysql.createConnection(
+  {
+    host:"localhost",
+    user:"root",
+    password:'',
+    database:"krishibid_xamp"
+  }
+)
+```
+Create an API , check whether the port is running properly , using nodemon index.js or node index.js from terminal
+```bash
+app.get('/', (req, res) => {
+  res.send('Krishi XAMP Server is Running')
+})
+```
