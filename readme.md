@@ -10,7 +10,7 @@
 <h2 align="center">Hear the call of the CRUD-lord! 👋</h2>
 </div>
 
-## Usage
+## Setup
 
 First step is to initiate a server that requires
 
@@ -60,4 +60,10 @@ Create an API , check whether the port is running properly , using nodemon index
 app.get('/', (req, res) => {
   res.send('Krishi XAMP Server is Running')
 })
+```
+## API GUIDE
+### Fetch for news UI grid, send req to /news
+```bash
+const BASE_SQL_URL = import.meta.env.VITE_SQL_SERVER
+const NEWS_SQL_API = BASE_API_URL + "/news"
 ```
