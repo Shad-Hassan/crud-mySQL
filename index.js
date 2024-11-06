@@ -4,7 +4,7 @@ const mysql = require("mysql");
 const app = express()
 require('dotenv').config()
 const port = process.env.PORT || 5000;
-
+app.use(express.json())
 app.use(cors());
 
 const db = mysql.createConnection(
@@ -29,6 +29,7 @@ app.get('/news',(req, res) => {
   })
 
 })
+
 
 
 app.listen(port, () => {
