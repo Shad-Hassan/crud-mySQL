@@ -3,41 +3,43 @@
 
 const articleQueries = {
     getArticleById: `
-        SELECT 
-    news_api.id AS news_id, 
-    news_api.language, 
-    news_api.date, 
-    news_api.title, 
-    news_api.news_card_img,
-    news_article.full_article,
-    news_article.youtubeUrl1,
-    news_article.youtubeUrl2,
-    news_article.youtubeUrl3,
-    news_gallery.image1,
-    news_gallery.image2,
-    news_gallery.image3,
-    news_gallery.image4,
-    news_gallery.image5,
-    news_gallery.image6,
-    news_gallery.image7,
-    news_gallery.image8,
-    news_seo.meta_description,
-    news_seo.meta_keywords,
-    news_seo.meta_canonical_url,
-    news_seo.meta_category,
-    news_seo.meta_title,
-    news_seo.og_title,
-    news_seo.og_description,
-    news_seo.og_url,
-    news_seo.og_type,
-    news_seo.twitter_title,
-    news_seo.twitter_description,
-    news_seo.twitter_card
-FROM news_api
-LEFT JOIN news_article ON news_api.id = news_article.id
-LEFT JOIN news_gallery ON news_api.id = news_gallery.id
-LEFT JOIN news_seo ON news_api.id = news_seo.id
-WHERE news_api.id = ?
+    SELECT 
+    na.id AS news_id, 
+    na.language, 
+    na.date, 
+    na.title, 
+    na.news_card_img,
+    nart.full_article,
+    nart.youtubeUrl1,
+    nart.youtubeUrl2,
+    nart.youtubeUrl3,
+    ng.image1,
+    ng.image2,
+    ng.image3,
+    ng.image4,
+    ng.image5,
+    ng.image6,
+    ng.image7,
+    ng.image8,
+    ns.meta_description,
+    ns.meta_keywords,
+    ns.meta_canonical_url,
+    ns.meta_category,
+    ns.meta_title,
+    ns.og_title,
+    ns.og_description,
+    ns.og_url,
+    ns.og_type,
+    ns.twitter_title,
+    ns.twitter_description,
+    ns.twitter_card
+FROM (
+    SELECT * FROM news_api WHERE id = ? LIMIT 1
+) AS na
+LEFT JOIN news_article AS nart ON na.id = nart.id
+LEFT JOIN news_gallery AS ng ON na.id = ng.id
+LEFT JOIN news_seo AS ns ON na.id = ns.id;
+
 
       `,
 }

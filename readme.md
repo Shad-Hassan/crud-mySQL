@@ -61,8 +61,13 @@ app.get('/', (req, res) => {
   res.send('Krishi XAMP Server is Running')
 })
 ```
-## API GUIDE
-### Fetch for news UI grid, send req to /news
+## API Routes
+### Get all News for UI only
+#### Backend route
+```bash
+"/news"
+```
+#### Fetch for news UI grid, send req to /news
 ```bash
 const BASE_SQL_URL = import.meta.env.VITE_SQL_SERVER
 const NEWS_SQL_API = BASE_API_URL + "/news"

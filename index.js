@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const newsRoutes = require("./routes/newsRoutes");
 const articleRoutes = require('./routes/articleRoutes');
+const postRoutes = require('./routes/postRoutes');  
 const handleErrors = require("./errors/handleErrors");
 require("dotenv").config();
 
@@ -13,8 +14,7 @@ app.use(cors());
 
 app.use("/news", newsRoutes);
 app.use('/article', articleRoutes);
-
-
+app.use("/post", postRoutes);  
 
 app.get("/", (req, res) => {
   res.send("Krishi XAMP Server is Running");
