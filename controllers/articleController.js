@@ -8,23 +8,22 @@ const getArticleById = async (req, res) => {
     return res.status(400).json({ message: "Invalid article ID" });
   }
 
-  const query = articleQueries.getArticleById(id);
+  const query = articleQueries.getArticleById;
 
   try {
-    const results = await new Promise((resolve, reject) => {
-      db.query(query, [id], (err, results) => {
-        if (err) return reject({ statusCode: 500, message: 'Error fetching article' });
-        resolve(results);
-      });
+    db.query(query, [id], (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error fetching article', error: err.message });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: 'Article not found' });
+      }
+
+      res.json(results[0]); // Send the first result as the article object
     });
-
-    if (results.length === 0) {
-      return res.status(404).json({ message: 'Article not found' });
-    }
-
-    res.json(results[0]); 
   } catch (error) {
-    res.status(error.statusCode || 500).json({ message: error.message || 'An error occurred' });
+    res.status(500).json({ message: error.message || 'An error occurred' });
   }
 };
 
