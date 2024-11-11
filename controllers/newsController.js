@@ -1,26 +1,29 @@
 const db = require('../config/db');
 const newsQueries = require('../queries/newsQueries');
-const ErrorHandler = require('../errors/ErrorHandler');
 
-const getAllNews = async (req, res, next) => {
-  try {
-    const results = await new Promise((resolve, reject) => {
-      db.query(newsQueries.getAllNews, (err, results) => {
-        if (err) return reject(ErrorHandler.internalServerError("Error fetching news", err));
-        resolve(results);
-      });
+const executeQuery = (query, params) => {
+  return new Promise((resolve, reject) => {
+    db.query(query, params, (err, result) => {
+      if (err) {
+        reject({ statusCode: 500, message: 'Error fetching news' });
+      }
+      resolve(result);
     });
+  });
+};
+
+const getAllNews = async (req, res) => {
+  try {
+    const results = await executeQuery(newsQueries.getAllNews);
 
     if (results.length === 0) {
-      return next(ErrorHandler.notFound("No news available"));
+      return res.status(404).json({ message: 'No news available' });
     }
 
     res.json(results);
   } catch (error) {
-    next(error);
+    res.status(error.statusCode || 500).json({ message: error.message || 'An error occurred' });
   }
 };
 
-module.exports = {
-  getAllNews,
-};
+module.exports = { getAllNews };

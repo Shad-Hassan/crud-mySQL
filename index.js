@@ -2,8 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const newsRoutes = require("./routes/newsRoutes");
 const articleRoutes = require('./routes/articleRoutes');
-const postRoutes = require('./routes/postRoutes');  
-const handleErrors = require("./errors/handleErrors");
+const postRoutes = require('./routes/postRoutes');
 require("dotenv").config();
 
 const app = express();
@@ -14,14 +13,11 @@ app.use(cors());
 
 app.use("/news", newsRoutes);
 app.use('/article', articleRoutes);
-app.use("/post", postRoutes);  
+app.use("/post", postRoutes);
 
 app.get("/", (req, res) => {
   res.send("Krishi XAMP Server is Running");
 });
-
-// Error handling middleware
-app.use(handleErrors);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
