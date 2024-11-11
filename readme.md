@@ -76,3 +76,19 @@ news_api
 const BASE_SQL_URL = import.meta.env.VITE_SQL_SERVER
 const NEWS_SQL_API = BASE_API_URL + "/news"
 ```
+
+### Get Specific News for NewsDetails Page
+#### Backend route - Request: "GET"
+```bash
+/article/:id
+```
+#### Table used
+```bash
+news_api, news_article , news_gallery, news_seo 
+```
+#### Fetch for news UI grid, send req to /news
+```bash
+const BASE_SQL_URL = import.meta.env.VITE_SQL_SERVER
+const NEWS_ARTICLE_API = BASE_API_URL + "/article"
+const SpecificNewsAPI = `${NEWS_ARTICLE_API}/${id}`;
+```
