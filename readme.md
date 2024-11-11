@@ -63,9 +63,13 @@ app.get('/', (req, res) => {
 ```
 ## API Routes
 ### Get all News for UI only
-#### Backend route
+#### Backend route - Request: "GET"
 ```bash
-"/news"
+/news
+```
+#### Table used
+```bash
+news_api
 ```
 #### Fetch for news UI grid, send req to /news
 ```bash
