@@ -13,15 +13,33 @@ const executeQuery = (query, params) => {
 };
 
 const parseDate = (dateString) => {
-  const isValidMySQLDate = (dateString) => /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(dateString);
+  
+  const sqlTimestampRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
 
-  if (isValidMySQLDate(dateString)) {
+  // If the string is already in SQL TIMESTAMP format, return it as-is
+  if (sqlTimestampRegex.test(dateString)) {
     return dateString;
-  } else {
-    const date = new Date(dateString);
-    return isNaN(date.getTime()) ? null : date.toISOString().slice(0, 19).replace('T', ' ');
   }
-};
+
+  // Attempt to parse as ISO 8601 date (e.g., "2024-11-12T16:05")
+  const date = new Date(dateString);
+
+  // Validate if parsing was successful
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid date format. Provide a valid ISO 8601 or SQL TIMESTAMP date string.");
+  }
+
+  // Convert parsed date to SQL TIMESTAMP format: 'YYYY-MM-DD HH:MM:SS'
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed in JS
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
 
 
 const insertNewsData = async (req, res) => {

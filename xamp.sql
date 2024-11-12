@@ -2,7 +2,7 @@
 CREATE TABLE news_api (
     id INT AUTO_INCREMENT PRIMARY KEY,      -- Auto-increment integer ID
     language VARCHAR(255),                  -- Language of the content
-    date DATETIME,                          -- Date of the news item
+    date TIMESTAMP,                         -- Timestamp of the news item (can be updated manually)
     title TEXT,                             -- Title of the news item
     news_card_img TEXT                      -- Background image path or URL
 );
