@@ -14,6 +14,8 @@ app.use(cors());
 app.use("/news", newsRoutes);
 app.use('/article', articleRoutes);
 app.use("/post", postRoutes);
+app.use("/client", clientRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("Krishi XAMP Server is Running");

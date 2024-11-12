@@ -48,3 +48,20 @@ CREATE TABLE news_seo (
     twitter_card TEXT,                       -- Twitter Card type (summary_large_image)
     FOREIGN KEY (id) REFERENCES news_api(id) ON DELETE CASCADE  -- Foreign key reference to news_api.id
 );
+
+CREATE TABLE message_api (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullname TEXT NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    email TEXT NOT NULL,
+    message TEXT NOT NULL,
+    date DATETIME NOT NULL,
+    
+    INDEX idx_fullname_phone_email_date (fullname, phone, email, date)
+);
+
+
+CREATE TABLE subscriber_api (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email TEXT NOT NULL
+);
