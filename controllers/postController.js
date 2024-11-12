@@ -112,22 +112,40 @@ const insertMessage = async (req, res) => {
 
 
 const insertSubscriber = async (req, res) => {
-  const { email } = req.body;
+  const { email } = req.body; // Extracting email from request body
 
   try {
-    db.query(postQueries.checkDuplicateSubscriber, [email], (err, results) => {
-      if (err) return res.status(500).json({ message: 'Error checking for duplicates' });
-
-      if (results.length > 0) return res.status(400).json({ message: 'Email is already subscribed' });
-
-      db.query(postQueries.insertEmail, [email], (err, result) => {
-        if (err) return res.status(500).json({ message: 'Error inserting email' });
-
-        res.status(201).json({ message: 'Successfully subscribed' });
+    // Check if the email is already in the database
+    const duplicateCheck = await new Promise((resolve, reject) => {
+      db.query(postQueries.checkDuplicateSubscriber, [email], (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
       });
     });
+
+    // If the email already exists in the database, return a 400 error
+    if (duplicateCheck.length > 0) {
+      return res.status(400).json({ message: 'Email is already subscribed' });
+    }
+
+    // If no duplicate, insert the email into the database
+    await new Promise((resolve, reject) => {
+      db.query(postQueries.insertEmail, [email], (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+
+    // Respond with success message if subscriber was added
+    res.status(201).json({ message: 'Subscriber added successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    // Handle any errors that occurred during the process
+    console.error("Error inserting subscriber:", error);
+    res.status(500).json({ message: 'Error inserting subscriber', error: error.message });
   }
 };
+
+
+
+
 module.exports = { insertNewsData, insertMessage, insertSubscriber };

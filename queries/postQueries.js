@@ -14,10 +14,9 @@ const postQueries = {
   `,
 
   checkDuplicateSubscriber: `
-  SELECT * FROM subscriber_api 
-  WHERE email = ? 
-  LIMIT 1
-`,
+    SELECT * FROM subscriber_api WHERE email = ? LIMIT 1
+  `,
+
 
   insertIntoNewsApi: `
         INSERT INTO news_api (language, date, title, news_card_img)
@@ -46,7 +45,7 @@ const postQueries = {
   `,
 
   insertEmail: `
-    INSERT INTO subscriber_api (email) 
+    INSERT INTO subscriber_api (email)
     VALUES (?)
   `
 

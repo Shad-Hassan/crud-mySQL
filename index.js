@@ -3,6 +3,7 @@ const cors = require("cors");
 const newsRoutes = require("./routes/newsRoutes");
 const articleRoutes = require('./routes/articleRoutes');
 const postRoutes = require('./routes/postRoutes');
+const clientRoutes = require('./routes/clientRoutes');
 require("dotenv").config();
 
 const app = express();
