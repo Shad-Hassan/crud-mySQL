@@ -5,54 +5,26 @@ const executeQuery = (query, params) => {
   return new Promise((resolve, reject) => {
     db.query(query, params, (err, result) => {
       if (err) {
-        reject({ statusCode: 500, message: 'Error executing query' });
+        console.error("Query Error:", err);  // Debugging log
+        return reject({ statusCode: 500, message: 'Error executing query' });
       }
       resolve(result);
     });
   });
 };
 
-const parseDate = (dateString) => {
-  
-  const sqlTimestampRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
-
-  // If the string is already in SQL TIMESTAMP format, return it as-is
-  if (sqlTimestampRegex.test(dateString)) {
-    return dateString;
-  }
-
-  // Attempt to parse as ISO 8601 date (e.g., "2024-11-12T16:05")
-  const date = new Date(dateString);
-
-  // Validate if parsing was successful
-  if (isNaN(date.getTime())) {
-    throw new Error("Invalid date format. Provide a valid ISO 8601 or SQL TIMESTAMP date string.");
-  }
-
-  // Convert parsed date to SQL TIMESTAMP format: 'YYYY-MM-DD HH:MM:SS'
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed in JS
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  const hours = String(date.getUTCHours()).padStart(2, '0');
-  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
-
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  };
-
-
-
 const insertNewsData = async (req, res) => {
+  // Log the incoming request body to verify the data being passed
+  console.log("Request body:", req.body);
+
   const {
-    language, date, title, news_card_img,
-    full_article, youtubeUrl1, youtubeUrl2, youtubeUrl3,
+    language, date, title, news_card_img, full_article,
+    youtubeUrl1, youtubeUrl2, youtubeUrl3,
     image1, image2, image3, image4, image5, image6, image7, image8,
     meta_description, meta_keywords, meta_canonical_url, meta_category,
     meta_title, og_title, og_description, og_url, og_type,
     twitter_title, twitter_description, twitter_card
   } = req.body;
-
-  const formattedDate = parseDate(date);
 
   const images = [image1, image2, image3, image4, image5, image6, image7, image8];
   const youtubeUrls = [youtubeUrl1, youtubeUrl2, youtubeUrl3];
@@ -63,25 +35,34 @@ const insertNewsData = async (req, res) => {
 
   db.beginTransaction(async (err) => {
     if (err) {
+      console.error("Transaction Error:", err);
       return res.status(500).json({ message: 'Transaction Start Failed' });
     }
 
     try {
-      const existingNews = await executeQuery(postQueries.checkDuplicateNewsQuery, [language, formattedDate, title, news_card_img]);
-
+      // Check for duplicates
+      const existingNews = await executeQuery(postQueries.checkDuplicateNewsQuery, [language, date, title, news_card_img]);
       if (existingNews.length > 0) {
         return res.status(409).json({ message: 'Duplicate entry detected.' });
       }
 
-      const newsApiId = await executeQuery(postQueries.insertIntoNewsApi, [language, formattedDate, title, news_card_img])
-        .then(result => result.insertId);
+      // Insert data into `news_api` and retrieve `insertId`
+      const newsApiResult = await executeQuery(postQueries.insertIntoNewsApi, [language, date, title, news_card_img]);
+      const newsApiId = newsApiResult.insertId;
 
+      if (!newsApiId) {
+        throw { statusCode: 500, message: 'Failed to retrieve insertId for newsApi' };
+      }
+
+      // Insert full article, YouTube URLs, and other data
       await executeQuery(postQueries.insertIntoNewsArticle, [newsApiId, full_article, ...youtubeUrls]);
       await executeQuery(postQueries.insertIntoNewsGallery, [newsApiId, ...images]);
       await executeQuery(postQueries.insertIntoNewsSeo, [newsApiId, ...seoData]);
 
-      db.commit((err) => {
-        if (err) {
+      // Commit transaction
+      db.commit((commitErr) => {
+        if (commitErr) {
+          console.error("Commit Error:", commitErr);
           return db.rollback(() => {
             return res.status(500).json({ message: 'Error committing transaction' });
           });
@@ -90,6 +71,7 @@ const insertNewsData = async (req, res) => {
       });
 
     } catch (err) {
+      console.error("Transaction Rollback Error:", err);
       db.rollback(() => {
         return res.status(err.statusCode || 500).json({ message: err.message || 'An error occurred during the transaction' });
       });
@@ -101,11 +83,10 @@ const insertNewsData = async (req, res) => {
 const insertMessage = async (req, res) => {
 
   const { fullname, phone, email, message, date } = req.body;
-  const formattedDate = parseDate(date);
-
+  
   try {
     const duplicateCheck = await new Promise((resolve, reject) => {
-      db.query(postQueries.checkDuplicateMessage, [fullname, phone, email, formattedDate], (err, results) => {
+      db.query(postQueries.checkDuplicateMessage, [fullname, phone, email, date], (err, results) => {
         if (err) return reject(err);
         resolve(results);
       });
@@ -116,7 +97,7 @@ const insertMessage = async (req, res) => {
     }
 
     await new Promise((resolve, reject) => {
-      db.query(postQueries.insertMessage, [fullname, phone, email, message, formattedDate], (err, result) => {
+      db.query(postQueries.insertMessage, [fullname, phone, email, message, date], (err, result) => {
         if (err) return reject(err);
         resolve(result);
       });
