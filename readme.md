@@ -61,54 +61,70 @@ app.get('/', (req, res) => {
   res.send('Krishi XAMP Server is Running')
 })
 ```
-## API Routes
-### Get all News for UI only
-#### Backend route - Request: "GET"
+## Postman Tester
+Use the following routes , in post man for backend queries
+
+### GET REQUESTS
 ```bash
 /news
 ```
-#### Table used
+if you are testing local
+```bash
+http://localhost:5000/news
+```
+##### Table used
 ```bash
 news_api
 ```
+
+### Get news Details 
+```bash
+/article/:id
+```
+if you are testing local
+```bash
+http://localhost:5000/article/:id
+```
+##### Table used
+```bash
+news_api, news_article , news_gallery, news_seo 
+```
+
+### Post News JSON from Panel
+```bash
+/post/news
+```
+if you are testing local
+```bash
+http://localhost:5000/post/news
+```
+##### Table used
+```bash
+news_api, news_article , news_gallery, news_seo 
+```
+
+## API Routes with Frontend
+
+### Get all News for UI only
 #### Fetch for news UI grid, send req to /news
 ```bash
 const BASE_SQL_URL = import.meta.env.VITE_SQL_SERVER
 const NEWS_SQL_API = BASE_API_URL + "/news"
 ```
 
-### Get Specific News for NewsDetails Page
-#### Backend route - Request: "GET"
-```bash
-/article/:id
-```
-#### Table used
-```bash
-news_api, news_article , news_gallery, news_seo 
-```
-#### Fetch for news UI grid, send req to /news
+#### Fetch Specific News for NewsDetails Page /article/:id
 ```bash
 const BASE_SQL_URL = import.meta.env.VITE_SQL_SERVER
 const NEWS_ARTICLE_API = BASE_API_URL + "/article"
 const SpecificNewsAPI = `${NEWS_ARTICLE_API}/${id}`;
 ```
-#### Post a news to backend, send req to /news
-```bash
-const BASE_SQL_URL = import.meta.env.VITE_SQL_SERVER
-const NEWS_SQL_API = BASE_API_URL + "/news"
-```
 
-### Get Specific News for NewsDetails Page
-#### Backend route - Request: "POST"
-```bash
-/post/news
-```
-#### Table used
-```bash
-news_api, news_article , news_gallery, news_seo 
-```
-#### Fetch for news UI grid, send req to /news
+
+
+### Post News JSON from Panel
+
+#### Post a news to backend, send req to /post/news
 ```bash
 const BASE_SQL_URL = import.meta.env.VITE_SQL_SERVER
-const SQL_POST_NEWS_API = BASE_API_URL + "/post/news"
+const NEWS_SQL_API = BASE_API_URL + "/post/news"
 ```
